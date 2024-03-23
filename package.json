@@ -18,6 +18,7 @@
   "homepage": "https://github.com/parth5795/URL_Shortner#readme",
   "dependencies": {
     "@nestjs/cli": "^10.3.2",
+    "crypto": "^1.0.1",
     "express": "^4.19.1",
     "mongoose": "^8.2.3",
     "prisma": "^5.11.0",
