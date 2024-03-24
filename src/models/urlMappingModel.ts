@@ -1,6 +1,9 @@
 
 const mongoose = require('mongoose');
 
+/**
+ * Represents the schema for URL mapping.
+ */
 const urlMappingSchema = new mongoose.Schema({
     originalUrl: {
         type: String,

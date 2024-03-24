@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.urlShortenerRouter = void 0;
+exports.generateRandomShortUrl = exports.generateShortUrl = exports.isValidUrl = exports.urlShortenerRouter = void 0;
 const express_1 = require("express");
 const crypto_1 = __importDefault(require("crypto"));
 exports.urlShortenerRouter = (0, express_1.Router)();
@@ -61,8 +61,8 @@ exports.urlShortenerRouter.get('/:shortUrl', (req, res) => __awaiter(void 0, voi
         if (!urlMapping) {
             return res.status(404).json({ error: 'Short URL not found' });
         }
-        // Redirect to the original URL using HTTP status code 301 (permanent redirection)
-        res.status(301).redirect(urlMapping.originalUrl);
+        // Redirect to the original URL using HTTP status code 302
+        res.status(302).redirect(urlMapping.originalUrl);
     }
     catch (error) {
         console.error('Error redirecting to original URL:', error);
@@ -77,6 +77,7 @@ function isValidUrl(url) {
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     return urlPattern.test(url);
 }
+exports.isValidUrl = isValidUrl;
 // Utility function to generate a short URL
 // Generate a unique short URL using MD5 hash and Base62 encoding
 function generateShortUrl(originalUrl) {
@@ -108,6 +109,7 @@ function generateShortUrl(originalUrl) {
         }
     });
 }
+exports.generateShortUrl = generateShortUrl;
 // Utility function to generate a random short URL
 function generateRandomShortUrl() {
     // Generate a random string of characters (e.g., alphanumeric, base62, etc.)
@@ -117,4 +119,5 @@ function generateRandomShortUrl() {
         .replace(/\//g, '_')
         .replace(/=+$/, ''); // Trim base64 padding characters
 }
+exports.generateRandomShortUrl = generateRandomShortUrl;
 exports.default = exports.urlShortenerRouter;
