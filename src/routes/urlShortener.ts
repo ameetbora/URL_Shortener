@@ -44,11 +44,7 @@ urlShortenerRouter.post('/long_url', async (req, res) => {
 urlShortenerRouter.get('/:shortUrl', async (req, res) => {
     try {
         const { shortUrl } = req.params;
-
-        // Validate the short URL (e.g., check if it's a valid format) 
-        if (!shortUrl) {
-            return res.status(400).json({ error: 'Short URL is missing' });
-        }
+        
         // Find the original URL in the database based on the short URL 
         const urlMapping = await UrlMapping.findOne({ shortUrl });
         if (!urlMapping) {

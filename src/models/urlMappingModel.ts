@@ -16,6 +16,9 @@ const urlMappingSchema = new mongoose.Schema({
     },
 });
 
+// Adding index on shortUrl field
+urlMappingSchema.index({ shortUrl: 1 }, { unique: true });
+
 const UrlMapping = mongoose.model('UrlMapping', urlMappingSchema);
 
 export default UrlMapping;
