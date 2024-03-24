@@ -120,5 +120,7 @@ function generateRandomShortUrl(): string {
 }
 
 
+// export the functions for testing and other purposes
+export { isValidUrl, generateShortUrl, generateRandomShortUrl };
 
 export default urlShortenerRouter;

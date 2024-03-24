@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require('mongoose');
+/**
+ * Represents the schema for URL mapping.
+ */
 const urlMappingSchema = new mongoose.Schema({
     originalUrl: {
         type: String,
