@@ -37,20 +37,27 @@ exports.urlShortenerRouter.post('/long_url', (req, res) => __awaiter(void 0, voi
         res.json({ shortUrl });
     }
     catch (error) {
+        // Need proper error message
+        console.error('Error shortening URL:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }));
 // create a get endpoint which will take shortened url and redirect to the original URL
 exports.urlShortenerRouter.get('/:shortUrl', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { shortUrl } = req.params;
-    // Find the original URL in the database based on the short URL 
-    const urlMapping = yield urlMappingModel_1.default.findOne({ shortUrl });
-    if (!urlMapping) {
-        return res.status(404).json({ error: 'Short URL not found' });
+    try {
+        const { shortUrl } = req.params;
+        // Find the original URL in the database based on the short URL 
+        const urlMapping = yield urlMappingModel_1.default.findOne({ shortUrl });
+        if (!urlMapping) {
+            return res.status(404).json({ error: 'Short URL not found' });
+        }
+        // Redirect to the original URL using HTTP status code 301 (permanent redirection)
+        res.status(301).redirect(urlMapping.originalUrl);
     }
-    // Redirect to the original URL 
-    // USE http to redirect to the original URL
-    res.redirect(urlMapping.originalUrl);
+    catch (error) {
+        console.error('Error redirecting to original URL:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 }));
 // Utility function to validate URL format
 function isValidUrl(url) {
@@ -75,12 +82,30 @@ function generateShortUrl(originalUrl) {
                 .replace(/\//g, '_')
                 .replace(/=+$/, ''); // Trim base64 padding characters
             // Shorten the string to the desired length (e.g., 8 characters)
-            const shortUrl = base62Encoded.slice(0, 8);
+            let shortUrl = base62Encoded.slice(0, 8);
+            // Check if the generated short URL already exists in the system
+            // Here you would perform a database lookup or any other storage mechanism
+            // to ensure uniqueness
+            const existingUrl = yield urlMappingModel_1.default.findOne({ shortUrl });
+            // if the generated short URL already exists , create a new one
+            if (existingUrl) {
+                shortUrl = generateRandomShortUrl();
+                console.log('Short URL already exists, generating a new one:', shortUrl);
+            }
             return shortUrl;
         }
         catch (error) {
             throw new Error('Error generating short URL');
         }
     });
+}
+// Utility function to generate a random short URL
+function generateRandomShortUrl() {
+    // Generate a random string of characters (e.g., alphanumeric, base62, etc.)
+    // Return the generated random string
+    return crypto_1.default.randomBytes(4).toString('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, ''); // Trim base64 padding characters
 }
 exports.default = exports.urlShortenerRouter;

@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const MONGO_URI = 'mongodb://localhost:27017/myDatabase'; // Replace with your MongoDB URI
+const MONGO_URI = 'mongodb://localhost:27017/urls'; // Replace with your MongoDB URI
 // Connect to MongoDB
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {

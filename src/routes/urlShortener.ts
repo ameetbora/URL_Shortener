@@ -27,6 +27,8 @@ urlShortenerRouter.post('/long_url', async (req, res) => {
         // Return the short URL
        res.json({ shortUrl });
     } catch (error) {
+        // Need proper error message
+        console.error('Error shortening URL:', error)
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -34,18 +36,21 @@ urlShortenerRouter.post('/long_url', async (req, res) => {
 
 // create a get endpoint which will take shortened url and redirect to the original URL
 urlShortenerRouter.get('/:shortUrl', async (req, res) => {
-    const { shortUrl } = req.params;
+    try {
+        const { shortUrl } = req.params;
 
-    // Find the original URL in the database based on the short URL 
-    const urlMapping = await UrlMapping.findOne({ shortUrl });
-    if (!urlMapping) {
-        return res.status(404).json({ error: 'Short URL not found' });
+        // Find the original URL in the database based on the short URL 
+        const urlMapping = await UrlMapping.findOne({ shortUrl });
+        if (!urlMapping) {
+            return res.status(404).json({ error: 'Short URL not found' });
+        }
+
+        // Redirect to the original URL using HTTP status code 301 (permanent redirection)
+        res.status(301).redirect(urlMapping.originalUrl);
+    } catch (error) {
+        console.error('Error redirecting to original URL:', error)
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    // Redirect to the original URL 
-    // USE http to redirect to the original URL
-    res.redirect(urlMapping.originalUrl)
-
 });
 
 
@@ -76,12 +81,34 @@ async function generateShortUrl(originalUrl: string): Promise<string> {
             .replace(/=+$/, ''); // Trim base64 padding characters
 
         // Shorten the string to the desired length (e.g., 8 characters)
-        const shortUrl = base62Encoded.slice(0, 8);
+        let shortUrl = base62Encoded.slice(0, 8);
 
+        // Check if the generated short URL already exists in the system
+        // Here you would perform a database lookup or any other storage mechanism
+        // to ensure uniqueness
+        const existingUrl = await UrlMapping.findOne({ shortUrl })
+        
+        // if the generated short URL already exists , create a new one
+        if (existingUrl) {
+            shortUrl = generateRandomShortUrl();
+        }
+        
         return shortUrl;
     } catch (error) {
         throw new Error('Error generating short URL');
     }
 }
+
+// Utility function to generate a random short URL
+function generateRandomShortUrl(): string {
+    // Generate a random string of characters (e.g., alphanumeric, base62, etc.)
+    // Return the generated random string
+    return crypto.randomBytes(4).toString('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, ''); // Trim base64 padding characters
+}
+
+
 
 export default urlShortenerRouter;

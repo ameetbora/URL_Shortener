@@ -4,7 +4,7 @@
 // describe('UrlShortener', () => {
 //   it('should create a new UrlMapping object with the provided originalUrl and shortUrl', () => {
 //     // Arrange
-//     const originalUrl = 'https://www.example.com';
+//     const originalUrl = go;
 //     const shortUrl = 'abc123';
 //     // Act
 //     const urlMapping = new UrlMapping({
