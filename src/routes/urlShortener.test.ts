@@ -55,13 +55,34 @@ describe('URL Redirect API', () => {
 
     it('should return status 404 for invalid short URL', async () => {
         const response = await request(app)
-            .get('/shorten/invalidUrl');
+            .get('/shorten/invalid_short_url');
 
         expect(response.status).toBe(404);
         expect(response.body).toHaveProperty('error');
     });
 });
 
+// To create redirection test, we need to have an actual database value , firt we will fetch it from the database and then test the redirection
+describe('URL Redirect API', () => {
+    let shortUrl = '';
+    beforeAll(async () => {
+        const response = await request(app)
+            .post('/shorten/long_url')
+            .send({ originalUrl: 'https://example.com' });
+
+        shortUrl = response.body.shortUrl;
+    });
+
+    it('should redirect to the original URL', async () => {
+        const response = await request(app)
+            .get(`/shorten/${shortUrl}`);
+
+        expect(response.status).toBe(302);
+        expect(response.header.location).toBe('https://example.com');
+    });
+});
+
+// Test the URL Redirect API GET request
 
 // Test the utility function isValidUrl
  describe('isValidUrl', () => {

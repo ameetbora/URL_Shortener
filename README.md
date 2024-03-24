@@ -18,6 +18,8 @@ A scalable and efficient URL shortener service implemented in Node.js and TypeSc
     - Redirects to the original URL
 
 # How to connect to MongoDB
+- The service uses MongoDB as the data store to store the mapping between the alias and the original URL. To connect to MongoDB, you need to provide the MongoDB connection string in the `MONGO_URI` environment variable.You can do that by changing the value of `MONGO_URI` in the `db.ts` file. Currently it is hardcoded to `mongodb://localhost:27017/urls`.
+
 # Data Storage
 - The service uses a simple in-memory data store to store the mapping between the alias and the original URL. This data store is implemented using a Map data structure in Node.js.
 

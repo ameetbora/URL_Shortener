@@ -55,8 +55,8 @@ urlShortenerRouter.get('/:shortUrl', async (req, res) => {
             return res.status(404).json({ error: 'Short URL not found' });
         }
 
-        // Redirect to the original URL using HTTP status code 301 (permanent redirection)
-        res.status(301).redirect(urlMapping.originalUrl);
+        // Redirect to the original URL using HTTP status code 302
+        res.status(302).redirect(urlMapping.originalUrl);
     } catch (error) {
         console.error('Error redirecting to original URL:', error)
         res.status(500).json({ error: 'Internal Server Error' });
