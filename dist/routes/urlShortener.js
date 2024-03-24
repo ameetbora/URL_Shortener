@@ -17,10 +17,16 @@ const express_1 = require("express");
 const crypto_1 = __importDefault(require("crypto"));
 exports.urlShortenerRouter = (0, express_1.Router)();
 const urlMappingModel_1 = __importDefault(require("../models/urlMappingModel"));
+// Define a constant for the desired short URL length
+const SHORT_URL_LENGTH = 8;
 // This endpoint will take a long URL and return a short URL
 exports.urlShortenerRouter.post('/long_url', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { originalUrl } = req.body;
+        // request body can not be empty
+        if (!originalUrl) {
+            return res.status(400).json({ error: 'Original URL is missing' });
+        }
         // Validate the original URL (e.g., check if it's a valid URL)
         if (!isValidUrl(originalUrl)) {
             return res.status(400).json({ error: 'Invalid URL format' });
@@ -46,6 +52,10 @@ exports.urlShortenerRouter.post('/long_url', (req, res) => __awaiter(void 0, voi
 exports.urlShortenerRouter.get('/:shortUrl', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { shortUrl } = req.params;
+        // Validate the short URL (e.g., check if it's a valid format) 
+        if (!shortUrl) {
+            return res.status(400).json({ error: 'Short URL is missing' });
+        }
         // Find the original URL in the database based on the short URL 
         const urlMapping = yield urlMappingModel_1.default.findOne({ shortUrl });
         if (!urlMapping) {
@@ -82,15 +92,14 @@ function generateShortUrl(originalUrl) {
                 .replace(/\//g, '_')
                 .replace(/=+$/, ''); // Trim base64 padding characters
             // Shorten the string to the desired length (e.g., 8 characters)
-            let shortUrl = base62Encoded.slice(0, 8);
+            let shortUrl = base62Encoded.slice(0, SHORT_URL_LENGTH);
             // Check if the generated short URL already exists in the system
             // Here you would perform a database lookup or any other storage mechanism
             // to ensure uniqueness
             const existingUrl = yield urlMappingModel_1.default.findOne({ shortUrl });
             // if the generated short URL already exists , create a new one
             if (existingUrl) {
-                shortUrl = generateRandomShortUrl();
-                console.log('Short URL already exists, generating a new one:', shortUrl);
+                return generateRandomShortUrl();
             }
             return shortUrl;
         }

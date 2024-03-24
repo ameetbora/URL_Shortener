@@ -1,42 +1,34 @@
-// import { UrlMapping } from '../models/urlMapping';
-// import { expect } from 'chai';
 
-// describe('UrlShortener', () => {
-//   it('should create a new UrlMapping object with the provided originalUrl and shortUrl', () => {
-//     // Arrange
-//     const originalUrl = go;
-//     const shortUrl = 'abc123';
+import UrlMapping from '../models/urlMappingModel';
+const request = require('supertest');
+const app = require('../index').default;
 
-//     // Act
-//     const urlMapping = new UrlMapping({
-//       originalUrl,
-//       shortUrl,
-//     });
+describe('UrlMapping', () => {
+  test('should create a new UrlMapping object with the provided originalUrl and shortUrl', () => {
+    const originalUrl = 'https://www.example.com';
+    const shortUrl = 'https://shorturl.com/abc123';
 
-//     // Assert
-//     expect(urlMapping.originalUrl).to.equal(originalUrl);
-//     expect(urlMapping.shortUrl).to.equal(shortUrl);
-//   });
-// });
+    const urlMapping = new UrlMapping({
+      originalUrl,
+      shortUrl,
+    });
 
+    expect(urlMapping.originalUrl).toBe(originalUrl);
+    expect(urlMapping.shortUrl).toBe(shortUrl);
+  });
+});
 
 
-// describe('UrlShortener', () => {
-//   // Existing test code...
+describe('URL Shortener API', () => {
+    it('should return status 400 for invalid URL', async () => {
+        const response = await request(app)
+            .post('/shorten/long_url')
+            .send({ originalUrl: '://example.com' });
 
-//   it('should find a UrlMapping object by shortUrl', async () => {
-//     // Arrange
-//     const shortUrl = 'abc123';
-//     const expectedUrlMapping = new UrlMapping({
-//       originalUrl: 'https://www.example.com',
-//       shortUrl,
-//     });
-//     await expectedUrlMapping.save();
+        expect(response.status).toBe(400);
+        expect(response.body).not.toHaveProperty('shortUrl');
+    });
+});
 
-//     // Act
-//     const urlMapping = await UrlMapping.findOne({ shortUrl });
 
-//     // Assert
-//     expect(urlMapping).to.deep.equal(expectedUrlMapping);
-//   });
-// });
+

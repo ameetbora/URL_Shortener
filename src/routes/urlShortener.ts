@@ -3,12 +3,18 @@ import crypto from 'crypto';
 export const urlShortenerRouter = Router();
 import UrlMapping from '../models/urlMappingModel';
 
+// Define a constant for the desired short URL length
+const SHORT_URL_LENGTH = 8;
 
 // This endpoint will take a long URL and return a short URL
 urlShortenerRouter.post('/long_url', async (req, res) => {
     try {
         const { originalUrl } = req.body;
 
+        // request body can not be empty
+        if (!originalUrl) {
+            return res.status(400).json({ error: 'Original URL is missing' });
+        }
         // Validate the original URL (e.g., check if it's a valid URL)
         if (!isValidUrl(originalUrl)) {
             return res.status(400).json({ error: 'Invalid URL format' });
@@ -39,6 +45,10 @@ urlShortenerRouter.get('/:shortUrl', async (req, res) => {
     try {
         const { shortUrl } = req.params;
 
+        // Validate the short URL (e.g., check if it's a valid format) 
+        if (!shortUrl) {
+            return res.status(400).json({ error: 'Short URL is missing' });
+        }
         // Find the original URL in the database based on the short URL 
         const urlMapping = await UrlMapping.findOne({ shortUrl });
         if (!urlMapping) {
@@ -81,7 +91,7 @@ async function generateShortUrl(originalUrl: string): Promise<string> {
             .replace(/=+$/, ''); // Trim base64 padding characters
 
         // Shorten the string to the desired length (e.g., 8 characters)
-        let shortUrl = base62Encoded.slice(0, 8);
+        let shortUrl = base62Encoded.slice(0, SHORT_URL_LENGTH);
 
         // Check if the generated short URL already exists in the system
         // Here you would perform a database lookup or any other storage mechanism
@@ -90,9 +100,9 @@ async function generateShortUrl(originalUrl: string): Promise<string> {
         
         // if the generated short URL already exists , create a new one
         if (existingUrl) {
-            shortUrl = generateRandomShortUrl();
+           return generateRandomShortUrl();
         }
-        
+
         return shortUrl;
     } catch (error) {
         throw new Error('Error generating short URL');
