@@ -14,7 +14,7 @@ A scalable and efficient URL shortener service implemented in Node.js and TypeSc
 `docker network create url-shortner-network --driver bridge`
 
 ## Step 4 : Run the MongoDB container
-`docker run --rm -d --name url-shortner-mongo --network url-shortner-network -p 27017:27017 -d mongo`
+`docker run --rm -d --name mongodb-server --network url-shortner-network -p 27017:27017 -d mongo`
 
 ## Step 5 : Build the Docker Image
 `docker build -t url-shortner .`
