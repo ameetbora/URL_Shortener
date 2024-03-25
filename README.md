@@ -22,3 +22,5 @@ A scalable and efficient URL shortener service implemented in Node.js and TypeSc
 ## Step 6 : Run the Docker Container
 `docker run --rm -d --name url-shortner --network url-shortner-network -p 3000:3000 url-shortner`
 
+## Step 7 : Run the test suite from the Docker Container
+`docker run --rm -it --name url-shortner-test --network url-shortner-network url-shortner npm test`
