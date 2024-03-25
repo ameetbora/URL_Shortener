@@ -52,10 +52,6 @@ exports.urlShortenerRouter.post('/long_url', (req, res) => __awaiter(void 0, voi
 exports.urlShortenerRouter.get('/:shortUrl', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { shortUrl } = req.params;
-        // Validate the short URL (e.g., check if it's a valid format) 
-        if (!shortUrl) {
-            return res.status(400).json({ error: 'Short URL is missing' });
-        }
         // Find the original URL in the database based on the short URL 
         const urlMapping = yield urlMappingModel_1.default.findOne({ shortUrl });
         if (!urlMapping) {

@@ -1,31 +1,24 @@
-# Use the official lightweight Node.js 18 image.
-FROM node:18-alpine
+# Use the official Node.js LTS image
+FROM node:lts
 
-# Set the working directory to the root of your project.
-WORKDIR /usr/src/app
+# Set the working directory inside the container
+WORKDIR /usr/src/index
 
-# Copy application dependency manifests to the container image.
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Install production dependencies.
-RUN npm install --only=production
+# Install dependencies
+RUN npm install
 
-# Copy local code (including src directory) to the container image.
+# Copy the rest of the application code
 COPY . .
 
-# Add Alpine repositories for MongoDB (main and community).
-RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.6/main' >> /etc/apk/repositories
-RUN echo 'http://dl-cdn.alpinelinux.org/alpine/v3.6/community' >> /etc/apk/repositories
+# Expose port 3000 for the Node.js application
+EXPOSE 3000
 
-# Update package index and install MongoDB.
-RUN apk update
-RUN apk add mongodb=3.4.4-r0
+# compile the typescript code
+RUN npx tsc
 
-# Create MongoDB data directory.
-RUN mkdir -p /data/db
 
-# Expose MongoDB port.
-EXPOSE 27017
-
-# Start MongoDB and your Node.js app
-CMD ["mongod", "&", "node", "index.js"]
+# Start the Node.js application
+CMD ["npm", "start"]
