@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MONGO_URI = 'mongodb://mongodb-server/urls'; // Replace with your MongoDB URI
+const MONGO_URI = 'mongodb://mongodb:27017/urls'; // Replace with your MongoDB URI
 
 // Connect to MongoDB
 const connectDB = async () => {
