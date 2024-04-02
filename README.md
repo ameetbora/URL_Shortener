@@ -7,12 +7,13 @@ A scalable and efficient URL shortener service implemented in Node.js and TypeSc
 - Docker
 
 ## Steps
-1. Clone the repository
-2. Run the following command to start the application
 
+# Run the following command to start the application
+```
 docker-compose up
-
+```
 # To stop the application
+```
 docker-compose down
 ```
 
