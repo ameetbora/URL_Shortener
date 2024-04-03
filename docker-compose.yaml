@@ -17,6 +17,14 @@ services:
     volumes:
       - mongodb_data:/data/db
 
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: npm run test
+    depends_on:
+      - mongodb
+
 volumes:
   mongodb_data:
     driver: local
